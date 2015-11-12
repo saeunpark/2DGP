@@ -41,6 +41,30 @@ class BackGround:
         if self.sky_x2<=-400:
             self.sky_x2=1200
 
+        #
+
+class Player_Attack:
+
+    PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
+    RUN_SPEED_KMPH = 40.0 # Km / Hour
+    RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+    RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+    RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+    def __init__(self,x,y):
+        self.image= load_image('p_attack.png') # 공격
+        self.x=x
+        self.y=y
+    def update(self,frame_time):
+        distance = Player_Attack.RUN_SPEED_PPS * frame_time
+        self.x+=distance
+        self.draw()
+    def get_hitbox(self):
+         return self.x - 30, self.y +30, self.x + 30, self.y-30
+    def draw(self):
+        self.image.draw(self.x, self.y)
+        draw_rectangle(*self.get_hitbox())
+
+            #
 
 class Player:
 
@@ -150,6 +174,12 @@ class Player:
                 self.frame_x=0
                 self.old_state=self.state
                 self.state=self.SKILL
+        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
+            if self.state==self.SKILL:
+                self.old_state=self.ATTACK
+            else:
+                self.frame_x=0
+                self.state=self.ATTACK
 
 
 class Monster_stand:
