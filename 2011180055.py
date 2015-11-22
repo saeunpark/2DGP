@@ -8,92 +8,96 @@ hero = None
 
 
 
+
 class BackGround:
     def __init__(self):
         self.block_image = load_image('BackGround_Block.png')
         self.sky_image=load_image('BackGround_sky.png')
-
-        self.block_x=400;
-        self.block_x2=1200;
-        self.sky_x=400;
-        self.sky_x2=1200;
-
+        self.x_move_max=init_data['BackGround']['max_x']
+        self.x_move_min=init_data['BackGround']['min_x']
+        self.block_x=init_data['BackGround']['min_x']
+        self.block_x2=init_data['BackGround']['max_x']
+        self.sky_x=init_data['BackGround']['min_x']
+        self.sky_x2=init_data['BackGround']['max_x']
+        self.block_moveP=init_data['BackGround']['block_moveP']
+        self.sky_moveP=init_data['BackGround']['sky_moveP']
+        self.screen_W=init_data['BackGround']['screen_w']
+        self.sky_h=init_data['BackGround']['sky_draw_h']
+        self.sky_y=init_data['BackGround']['sky_y']
+        self.block_h=init_data['BackGround']['block_draw_h']
+        self.block_y=init_data['BackGround']['block_y']
 
     def draw(self):
-        self.sky_image.clip_draw(0,0,800,300,self.sky_x,450)
-        self.sky_image.clip_draw(0,0,800,300,self.sky_x2,450)
-        self.block_image.clip_draw(0,0,800,350,self.block_x,130)
-        self.block_image.clip_draw(0,0,800,350,self.block_x2,130)
+        self.sky_image.clip_draw(0,0,self.screen_W,self.sky_h,self.sky_x,self.sky_y)
+        self.sky_image.clip_draw(0,0,self.screen_W,self.sky_h,self.sky_x2,self.sky_y)
+        self.block_image.clip_draw(0,0,self.screen_W,self.block_h,self.block_x,self.block_y)
+        self.block_image.clip_draw(0,0,self.screen_W,self.block_h,self.block_x2,self.block_y)
     def update(self):
 
         self.draw();
-        self.block_x-=4
-        self.sky_x-=2
-        self.block_x2-=4
-        self.sky_x2-=2
+        self.block_x-=self.block_moveP
+        self.sky_x-=self.sky_moveP
+        self.block_x2-=self.block_moveP
+        self.sky_x2-=self.sky_moveP
 
-        if self.block_x<=-400:
-            self.block_x=1200
-        if self.sky_x<=-400:
-            self.sky_x=1200
-        if self.block_x2<=-400:
-            self.block_x2=1200
-        if self.sky_x2<=-400:
-            self.sky_x2=1200
-
+        if self.block_x<=-self.x_move_min:
+            self.block_x=self.x_move_max
+        if self.sky_x<=-self.x_move_min:
+            self.sky_x=self.x_move_max
+        if self.block_x2<=-self.x_move_min:
+            self.block_x2=self.x_move_max
+        if self.sky_x2<=-self.x_move_min:
+            self.sky_x2=self.x_move_max
         #
 
-class Player_Attack:
-
-    PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
-    RUN_SPEED_KMPH = 40.0 # Km / Hour
-    RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
-    RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
-    RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
-    def __init__(self,x,y):
-        self.image= load_image('p_attack.png') # 공격
-        self.x=x
-        self.y=y
-    def update(self,frame_time):
-        distance = Player_Attack.RUN_SPEED_PPS * frame_time
-        self.x+=distance
-        self.draw()
-    def get_hitbox(self):
-         return self.x - 30, self.y +30, self.x + 30, self.y-30
-    def draw(self):
-        self.image.draw(self.x, self.y)
-        draw_rectangle(*self.get_hitbox())
-
-            #
-
 class Player:
-
+    global font
     STANDING,LEFT_MOVE,RIGHT_MOVE,UP_MOVE,DOWN_MOVE=0,1,2,3,4
     ATTACK,SKILL=5,6
     #SKILL,HIT=None
-
+    PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
+    RUN_SPEED_KMPH = 20.0 # Km / Hour
+    RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+    RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+    RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
     def __init__(self):
+        self.skill_gauge=2
         self.image = load_image('player.png')
         self.image_attack = load_image('player_attack.png')
         self.image_skill=load_image('player_skill.png')
+        self.image_skill_effect=load_image('skill.png')
+        self.image_skill_effect2=load_image('skill2.png')
         self.frame_y = 0
         self.frame_x = 0
         self.state = self.STANDING
         self.old_state=self.state
         self.x=200
-        self.y=350
-        self.hp=5
+        self.y=200
+        self.hp=300
     def draw(self):
         if self.state==self.ATTACK:
             self.image_attack.clip_draw(self.frame_x * 200, self.frame_y * 115, 200, 115, self.x, self.y)
         elif self.state==self.SKILL:
             self.image_skill.clip_draw(self.frame_x * 230, self.frame_y * 150, 230, 130, self.x, self.y)
+            if self.frame_x>=3 and self.frame_x<=7:
+                if self.frame_x%2==0:
+                    self.image_skill_effect.draw(400,300)
+                else:
+                    self.image_skill_effect2.draw(400,300)
+                for monsteri in monster:
+                    monsteri.hp=0
         else:
             self.image.clip_draw(self.frame_x * 117, self.frame_y * 115, 117, 115, self.x, self.y)
-
-    def update(self):
+        draw_rectangle(*self.get_hitbox())
+        font.draw(self.x-30,self.y+60,'hp -> %d ,gauge->%d'%(self.hp,self.skill_gauge))
+    def get_hitbox(self):
+         return self.x - 40, self.y+50 , self.x + 40, self.y-50
+    def update(self, frame_time):
+        distance = Player.RUN_SPEED_PPS * frame_time
         if self.state==self.ATTACK:
             self.frame_x = (self.frame_x + 1) % 9
+            if self.frame_x==5:
+                player_arrow.append(Player_Attack(self.x+30,self.y))
         elif self.state==self.SKILL:
             if self.frame_x==12:
                 self.frame_x=0
@@ -105,13 +109,13 @@ class Player:
 
 
         if self.state == self.RIGHT_MOVE:
-            self.x = min(750, self.x + 5)
+            self.x = min(750, self.x + distance)
         elif self.state == self.LEFT_MOVE:
-            self.x = max(50, self.x - 5)
+            self.x = max(50, self.x - distance)
         elif self.state == self.UP_MOVE:
-            self.y = min(750, self.y + 5)
+            self.y = min(325, self.y + distance)
         elif self.state == self.DOWN_MOVE:
-            self.y = max(50, self.y - 5)
+            self.y = max(50, self.y - distance)
 
 
 
@@ -169,17 +173,38 @@ class Player:
                 self.state=self .STANDING
             elif self.state==self.SKILL:
                 self.old_state=self.STANDING
-        elif (event.type, event.key) ==(SDL_KEYDOWN,SDLK_a):
+        elif (event.type, event.key) ==(SDL_KEYDOWN,SDLK_z):
             if self.state!=self.SKILL:
+                self.skill_gauge-=1
                 self.frame_x=0
                 self.old_state=self.state
                 self.state=self.SKILL
-        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
-            if self.state==self.SKILL:
-                self.old_state=self.ATTACK
-            else:
-                self.frame_x=0
-                self.state=self.ATTACK
+
+
+
+class Player_Attack:
+
+    PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
+    RUN_SPEED_KMPH = 40.0 # Km / Hour
+    RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+    RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+    RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+    def __init__(self,x,y):
+        self.image= load_image('p_attack.png') # 공격
+        self.x=x
+        self.y=y
+    def update(self,frame_time):
+        distance = Player_Attack.RUN_SPEED_PPS * frame_time
+        self.x+=distance
+        self.draw()
+    def get_hitbox(self):
+         return self.x - 30, self.y +30, self.x + 30, self.y-30
+    def draw(self):
+        self.image.draw(self.x, self.y)
+        draw_rectangle(*self.get_hitbox())
+
+            #
+
 
 
 class Monster_stand:
