@@ -278,6 +278,69 @@ class Monster_Pink:
     def detecting(a, self):
         pass
 
+
+
+class Monster_Bird:
+    image = None
+    image_attack = None
+    MOVE,ATTACK=0,1
+    PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
+    RUN_SPEED_KMPH = 20.0 # Km / Hour
+    RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+    RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+    RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+    def __init__(self):
+        #self.arrow=[]
+        if Monster_Bird.image==None:
+            self.image = load_image('monster_bird_stand.png')
+        if Monster_Bird.image_attack==None:
+            self.image_attack = load_image('monster_bird_attack.png')
+        self.frame_x = 0
+        self.frame_y=self.MOVE
+        self.x=900
+        self.y=random.randint(50,325)
+        self.hp=1
+        self.tempframe_x=0
+        self.state=self.MOVE
+        self.sense=False
+    def set(x,y):
+        self.x=x
+        self.y=y
+    def draw(self):
+        if self.state==self.MOVE:
+            self.image.clip_draw(self.frame_x * 60, self.frame_y* 55, 60, 55, self.x, self.y)
+        elif self.state==self.ATTACK:
+           self.image_attack.clip_draw((self.frame_x) * 150, self.frame_y* 75, 150, 75, self.x, self.y)
+        draw_rectangle(*self.get_hitbox())
+    def get_hitbox(self):
+         return self.x - 30, self.y +30, self.x + 20, self.y-30
+    def change_state(self):
+        if self.state==self.MOVE and self.sense==True:
+            self.state=self.ATTACK
+            frame_x=0
+        elif self.state==self.ATTACK and self.sense==False:
+            self.state=self.MOVE
+            frame_x=0
+    def update(self,frame_time):
+        distance = Monster_Bird.RUN_SPEED_PPS * frame_time
+
+        if self.state==self.ATTACK:
+            self.frame_x = (self.frame_x + 1) % 10
+            if self.frame_x==5:
+                print("new arrow")
+                monster_arrow.append(Bird_Arrow(self.x,self.y))
+        elif self.state==self.MOVE:
+            self.frame_x = (self.frame_x + 1) % 6
+        self.x-=distance
+        self.draw()
+    def detecting(self,a):
+        left_a,top_a , right_a, bottom_a = a.get_hitbox()
+        left_b, top_b, right_b,  bottom_b= self.get_hitbox()
+        if right_a < left_b:
+            if top_a-10 < bottom_b: return False
+            if bottom_a+10 > top_b: return False
+            if left_a > right_b: return False
+            return True
 class Bird_Arrow:
     image=None
     PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
@@ -301,6 +364,71 @@ class Bird_Arrow:
     def draw(self):
         self.image.draw(self.x, self.y)
         draw_rectangle(*self.get_hitbox())
+
+
+class Monster_Alien:
+    image=None
+    image_attack=None
+    MOVE,ATTACK=0,1
+    PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
+    RUN_SPEED_KMPH = 15.0 # Km / Hour
+    RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+    RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+    RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+    def __init__(self):
+        if Monster_Alien.image==None:
+            self.image = load_image('monster_alien_stand.png')
+        if Monster_Alien.image_attack==None:
+            self.image_attack = load_image('monster_alien_attack.png')
+        self.state=self.MOVE
+        self.frame_x = 0
+        self.tempframe_x=0
+        self.frame_y=self.MOVE
+        self.x=900
+        self.y=random.randint(50,325)
+        self.hp=1
+        self.sense=False
+    def set(x,y):
+        self.x=x
+        self.y=y
+    def draw(self):
+        if self.state==self.MOVE:
+            self.image.clip_draw(self.frame_x * 90, self.frame_y* 65, 90, 65, self.x, self.y)
+        elif self.state==self.ATTACK:
+            self.image_attack.clip_draw((self.frame_x) * 275, self.frame_y* 85, 275, 85, self.x, self.y)
+        draw_rectangle(*self.get_hitbox())
+    def change_state(self):
+        if self.state==self.MOVE and self.sense==True:
+            self.state=self.ATTACK
+           # frame_x=0
+        elif self.state==self.ATTACK and self.sense==False:
+            self.state=self.MOVE
+            frame_x=0
+    def get_hitbox(self):
+        if self.state==self.MOVE:
+            return self.x - 40, self.y+30 , self.x + 30, self.y-30
+        elif self.state==self.ATTACK:
+            return self.x - 40-((self.frame_x-1)*8), self.y+30 , self.x + 40, self.y-30
+
+    def update(self,frame_time):
+        distance =  Monster_Alien.RUN_SPEED_PPS * frame_time
+        if self.state==self.MOVE:
+            self.frame_x = (self.frame_x + 1) % 4
+        elif self.state==self.ATTACK:
+            self.frame_x = (self.frame_x + 1) % 13
+        self.x-=distance
+        self.draw()
+    def detecting(self,a):
+        left_a,top_a , right_a, bottom_a = a.get_hitbox()
+        left_b, top_b, right_b,  bottom_b= self.get_hitbox()
+
+        if top_a < bottom_b: return False
+        if bottom_a > top_b: return False
+        if left_a > right_b: return False
+
+        if right_a < left_b-150: return False
+        if right_a > left_b-150: return True
+
 def main():
 
     open_canvas()
