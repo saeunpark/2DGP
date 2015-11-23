@@ -121,7 +121,7 @@ class Player:
         # [HP : %d], self.hp,
     def get_hitbox(self):
          return self.x - 40, self.y+50 , self.x + 40, self.y-50
-    def update(self, frame_time):
+    def update(self, frame_time):ㅁ
         distance = Player.RUN_SPEED_PPS * frame_time
         if self.state==self.ATTACK:
             self.frame_x = (self.frame_x + 1) % 9
@@ -382,6 +382,7 @@ class Monster_Alien:
             self.frame_x = (self.frame_x + 1) % 13
         self.x-=distance
         self.draw()
+        # self
     def detecting(self,a):
         left_a,top_a , right_a, bottom_a = a.get_hitbox()
         left_b, top_b, right_b,  bottom_b= self.get_hitbox()
@@ -390,7 +391,9 @@ class Monster_Alien:
         if bottom_a > top_b: return False
         if left_a > right_b: return False
 
+
         if right_a < left_b-150: return False
+
         if right_a > left_b-150: return True
 
 
