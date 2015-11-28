@@ -115,10 +115,9 @@ class Player:
         else:
             self.image.clip_draw(self.frame_x * 117, self.frame_y * 115, 117, 115, self.x, self.y)
         draw_rectangle(*self.get_hitbox())
-        #font.draw(self.x-50,self.y+80,' SKILL: %d '%(self.skill_Skill))
+        font.draw(self.x-50,self.y+80,' [HP : %d], SKILL: %d '%(self.hp, self.skill_Skill))
 
 
-        # [HP : %d], self.hp,
     def get_hitbox(self):
          return self.x - 40, self.y+50 , self.x + 40, self.y-50
     def update(self, frame_time):ㅁ
