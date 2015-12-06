@@ -14,6 +14,8 @@ init_data_file=open('init.txt','r')
 init_data=json.load(init_data_file)
 init_data_file.close()
 
+
+
 class BackGround:
     def __init__(self):
         self.block_image = load_image('BackGround_Block.png')
@@ -120,7 +122,7 @@ class Player:
 
     def get_hitbox(self):
          return self.x - 40, self.y+50 , self.x + 40, self.y-50
-    def update(self, frame_time):ㅁ
+    def update(self, frame_time):
         distance = Player.RUN_SPEED_PPS * frame_time
         if self.state==self.ATTACK:
             self.frame_x = (self.frame_x + 1) % 9
