@@ -138,6 +138,7 @@ class Player:
             self.frame_x = (self.frame_x + 1) % 5
 
 
+
         if self.state == self.RIGHT_MOVE:
             self.x = min(750, self.x + distance)
         elif self.state == self.LEFT_MOVE:
