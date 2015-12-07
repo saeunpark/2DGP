@@ -34,6 +34,23 @@ class BackGround:
         self.block_h=init_data['BackGround']['block_draw_h']
         self.block_y=init_data['BackGround']['block_y']
 
+        self.block_image = load_image('BackGround_Block.png')
+        self.sky_image=load_image('BackGround_sky.png')
+        self.x_move_max=init_data['BackGround']['max_x']
+        self.x_move_min=init_data['BackGround']['min_x']
+        self.block_x=init_data['BackGround']['min_x']
+        self.block_x2=init_data['BackGround']['max_x']
+        self.sky_x=init_data['BackGround']['min_x']
+        self.sky_x2=init_data['BackGround']['max_x']
+        self.block_moveP=init_data['BackGround']['block_moveP']
+        self.sky_moveP=init_data['BackGround']['sky_moveP']
+        self.screen_W=init_data['BackGround']['screen_w']
+        self.sky_h=init_data['BackGround']['sky_draw_h']
+        self.sky_y=init_data['BackGround']['sky_y']
+        self.block_h=init_data['BackGround']['block_draw_h']
+        self.block_y=init_data['BackGround']['block_y']
+
+
     def draw(self):
         self.sky_image.clip_draw(0,0,self.screen_W,self.sky_h,self.sky_x,self.sky_y)
         self.sky_image.clip_draw(0,0,self.screen_W,self.sky_h,self.sky_x2,self.sky_y)
