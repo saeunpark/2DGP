@@ -32,6 +32,14 @@ class BackGround:
         self.sky_y=init_data['BackGround']['sky_y']
         self.block_h=init_data['BackGround']['block_draw_h']
         self.block_y=init_data['BackGround']['block_y']
+#
+# class Bgm:
+#     def __init__(self):
+#         self.bgm = load_music('VoodooKingdom.mp3')
+#         self.bgm.set_volume(64)
+#         self.bgm.repeat_play()
+
+
 
     def draw(self):
         self.sky_image.clip_draw(0,0,self.screen_W,self.sky_h,self.sky_x,self.sky_y)
@@ -377,6 +385,8 @@ class Monster_Alien:
         elif self.state==self.ATTACK:
             return self.x - 40-((self.frame_x-1)*8), self.y+30 , self.x + 40, self.y-30
 
+
+
     def update(self,frame_time):
         distance =  Monster_Alien.RUN_SPEED_PPS * frame_time
         if self.state==self.MOVE:
@@ -462,7 +472,6 @@ def handle_events():
 
 
 def main():
-
 
     open_canvas()
 
