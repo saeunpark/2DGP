@@ -1,6 +1,7 @@
 # hero_controller.py : control hero move with left and right key
 import time
 import random
+import hold_state
 import json
 from pico2d import *
 
@@ -150,7 +151,6 @@ class Player:
 
         self.draw();
     def handle_event(self, event):
-
         if (event.type, event.key) == (SDL_KEYDOWN, SDLK_LEFT):
             if self.state==self.SKILL:
                 self.old_state=self.LEFT_MOVE
@@ -202,12 +202,15 @@ class Player:
                 self.state=self .STANDING
             elif self.state==self.SKILL:
                 self.old_state=self.STANDING
+        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_h):
+               self.push_state(hold_state)
         elif (event.type, event.key) ==(SDL_KEYDOWN,SDLK_a):
             if self.state!=self.SKILL:
                 self.skill_Skill-=1
                 self.frame_x=0
                 self.old_state=self.state
                 self.state=self.SKILL
+
 
 
 

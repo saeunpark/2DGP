@@ -12,7 +12,7 @@ name = "HoldState"
 
 def enter():
     global image
-    image=load_image('./resource/hold.png')
+    image=load_image('./hold.png')
 def exit():
     pass
 
