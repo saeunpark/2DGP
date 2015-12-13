@@ -1,0 +1,2 @@
+shot = False
+bim = False
