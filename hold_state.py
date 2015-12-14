@@ -1,18 +1,15 @@
-
-import json
 import os
 
 from pico2d import *
 
 import game_framework
-
 import hold_state
 
 name = "HoldState"
 
 def enter():
-    global image
-    image=load_image('./hold.png')
+    pass
+
 def exit():
     pass
 
@@ -37,5 +34,4 @@ def update(frame_time):
     pass
 
 def draw(frame_time):
-    image.draw(400,300)
-    update_canvas()
+    pass
